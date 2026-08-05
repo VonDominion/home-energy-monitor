@@ -1,0 +1,13 @@
+{
+  "name": "home-energy-monitor-server",
+  "version": "1.0.0",
+  "description": "Backend API for Home Energy Monitor",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
