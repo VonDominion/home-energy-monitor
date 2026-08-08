@@ -2,6 +2,13 @@ import { Routes, Route } from "react-router-dom"
 import PublicLayout from "../Layouts/PublicLayout/PublicLayout"
 import DashboardLayout from "../Layouts/DasboardLayout/DasboardLayout"
 
+import Home from "../pages/Home.jsx"
+import Login from "../pages/Login.jsx"
+import Register from "../pages/Register.jsx"
+import Appliances from "../pages/Appliances.jsx"
+import Dashboard from "../pages/Dashboard.jsx"
+import Profile from "../pages/Profile.jsx"
+
 function AppRoutes() {
   return (
     <>
@@ -9,24 +16,24 @@ function AppRoutes() {
 
         {/* Public Routes*/}
         <Route element={<PublicLayout />}>
-          <Route path="/" element={<h1>Home</h1>} /> {/* Need to be replaced by <Home /> */}
-          <Route path="/login" element={<h1>Login</h1>} />
-          <Route path="/register" element={<h1>Register</h1>} />
+          <Route path="/" element={<Home />} /> {/* Need to be replaced by <Home /> */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
         </Route>
 
         {/* Protected Routes */}
 
         <Route path="/dashboard" element={<DashboardLayout />}>
-          <Route index element={<h1>Dashboard</h1>} />
+          <Route index element={<Dashboard />} />
 
           <Route
             path="appliances"
-            element={<h1>Appliances</h1>}
+            element={<Appliances />}
           />
 
           <Route
             path="profile"
-            element={<h1>Profile</h1>}
+            element={<Profile />}
           />
 
         </Route>

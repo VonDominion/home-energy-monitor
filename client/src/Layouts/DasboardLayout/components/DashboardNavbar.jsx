@@ -1,5 +1,5 @@
-function DashboardFooter(){
+function DashboardNavbar(){
   return <footer>DashboardNavbar</footer>;
 }
 
-export default DashboardFooter
+export default DashboardNavbar
