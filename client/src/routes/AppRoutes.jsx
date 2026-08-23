@@ -16,7 +16,7 @@ function AppRoutes() {
 
         {/* Public Routes*/}
         <Route element={<PublicLayout />}>
-          <Route path="/" element={<Home />} /> {/* Need to be replaced by <Home /> */}
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Route>
