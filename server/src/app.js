@@ -1,8 +1,10 @@
-function createApp() {
-  return (req, res) => {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ message: 'Home Energy Monitor API' }));
-  };
-}
+const express = require('express');
+const healthRoutes = require('./routes/health.routes');
 
-module.exports = createApp;
+const app = express();
+
+app.use(express.json());
+
+app.use('/api', healthRoutes);
+
+module.exports = app;
