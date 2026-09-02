@@ -123,103 +123,105 @@ function LoginForm() {
   };
 
 
-function LoginForm() {
-  return (
-    <div className="flex h-full items-center justify-center px-8 py-10 md:px-12">
-      <div className="w-full max-w-sm">
-        <div className="mb-8">
-          <p className="font-sans text-xs font-semibold uppercase tracking-wider text-ink-muted">
-            Welcome Back
-          </p>
+  function LoginForm() {
+    return (
+      <div className="flex h-full items-center justify-center px-8 py-10 md:px-12">
+        <div className="w-full max-w-sm">
+          <div className="mb-8">
+            <p className="font-sans text-xs font-semibold uppercase tracking-wider text-ink-muted">
+              Welcome Back
+            </p>
 
-          <h2 className="mt-3 font-serif text-3xl font-semibold tracking-tight text-ink">
-            Sign in
-          </h2>
+            <h2 className="mt-3 font-serif text-3xl font-semibold tracking-tight text-ink">
+              Sign in
+            </h2>
 
-          <p className="mt-3 font-sans text-sm leading-6 text-ink-muted">
-            Access your dashboard to check your latest energy analytics.
-          </p>
-        </div>
+            <p className="mt-3 font-sans text-sm leading-6 text-ink-muted">
+              Access your dashboard to check your latest energy analytics.
+            </p>
+          </div>
 
-        <form className="space-y-5" onSubmit={handleSubmit}>
-          <div>
+          <form className="space-y-5" onSubmit={handleSubmit}>
+            <div>
+              <Input
+                label="Email"
+                type="email"
+                name="email"
+                placeholder="you@example.com"
+                value={formData.email}
+                onChange={handleChange}
+              />
+              {errors.email && (
+                <p className="text-[11px] mt-1 font-semibold text-warn">
+                  {errors.email}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <Input
+                label="Password"
+                type="password"
+                name="password"
+                placeholder="Enter your password"
+                value={formData.password}
+                onChange={handleChange}
+              />
+
+              {/* Flex container to align the error message and forgot password link */}
+              <div className="flex items-start justify-between mt-1">
+                <div className="flex-1">
+                  {errors.password && (
+                    <p className="text-[11px] font-semibold text-warn">
+                      {errors.password}
+                    </p>
+                  )}
+                </div>
+                <a
+                  href="/forgot-password"
+                  className="text-ink text-sm hover:text-primary underline-offset-4 hover:underline ml-4"
+                >
+                  Forgot password?
+                </a>
+              </div>
+            </div>
+            <p>
+              Access your energy dashboard and continue monitoring your home.
+            </p>
+          </form>
+
+          <form className="space-y-5">
             <Input
               label="Email"
               type="email"
               name="email"
               placeholder="you@example.com"
-              value={formData.email}
-              onChange={handleChange}
             />
-            {errors.email && (
-              <p className="text-[11px] mt-1 font-semibold text-warn">
-                {errors.email}
-              </p>
-            )}
-          </div>
 
-          <div>
             <Input
               label="Password"
               type="password"
               name="password"
               placeholder="Enter your password"
-              value={formData.password}
-              onChange={handleChange}
             />
-            
-            {/* Flex container to align the error message and forgot password link */}
-            <div className="flex items-start justify-between mt-1">
-              <div className="flex-1">
-                {errors.password && (
-                  <p className="text-[11px] font-semibold text-warn">
-                    {errors.password}
-                  </p>
-                )}
-              </div>
-              <a 
-                href="/forgot-password" 
-                className="text-ink text-sm hover:text-primary underline-offset-4 hover:underline ml-4"
-              >
-                Forgot password?
-              </a>
+
+            <div className="pt-2">
+              <Button type="submit" className="w-full">
+                Sign In
+              </Button>
             </div>
-          </div>
-            Access your energy dashboard and continue monitoring your home.
-          </p>
-        </div>
+          </form>
 
-        <form className="space-y-5">
-          <Input
-            label="Email"
-            type="email"
-            name="email"
-            placeholder="you@example.com"
-          />
-
-          <Input
-            label="Password"
-            type="password"
-            name="password"
-            placeholder="Enter your password"
-          />
-
-          <div className="pt-2">
-            <Button type="submit" className="w-full">
-              Sign In
-            </Button>
-          </div>
-        </form>
-
-        {/* <p className="mt-6 text-center font-sans text-xs text-ink-faint">
+          {/* <p className="mt-6 text-center font-sans text-xs text-ink-faint">
           Don't have an account yet? <a href="/register" className="text-ink hover:text-primary underline underline-offset-4 hover:underline">Register here</a>.
         </p> */}
-        <p className="mt-6 text-center font-sans text-xs text-ink-faint">
-          Your energy data stays connected to your account.
-        </p>
-      </div>
-    </div>
-  );
+          <p className="mt-6 text-center font-sans text-xs text-ink-faint">
+            Your energy data stays connected to your account.
+          </p>
+        </div>
+      </div >
+    );
+  }
 }
 
 export default LoginForm;
