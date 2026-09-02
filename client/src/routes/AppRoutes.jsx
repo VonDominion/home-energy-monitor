@@ -8,6 +8,7 @@ import Register from "../pages/Register.jsx"
 import Appliances from "../pages/Appliances.jsx"
 import Dashboard from "../pages/Dashboard.jsx"
 import Profile from "../pages/Profile.jsx"
+import ForgotPassword from "../pages/ForgotPassword.jsx"
 
 function AppRoutes() {
   return (
@@ -19,6 +20,10 @@ function AppRoutes() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route 
+            path="/forgot-password" 
+            element={<ForgotPassword />} 
+          />
         </Route>
 
         {/* Protected Routes */}
