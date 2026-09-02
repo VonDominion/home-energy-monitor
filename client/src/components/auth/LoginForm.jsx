@@ -122,6 +122,8 @@ function LoginForm() {
     // Send formData to backend API
   };
 
+
+function LoginForm() {
   return (
     <div className="flex h-full items-center justify-center px-8 py-10 md:px-12">
       <div className="w-full max-w-sm">
@@ -183,6 +185,24 @@ function LoginForm() {
               </a>
             </div>
           </div>
+            Access your energy dashboard and continue monitoring your home.
+          </p>
+        </div>
+
+        <form className="space-y-5">
+          <Input
+            label="Email"
+            type="email"
+            name="email"
+            placeholder="you@example.com"
+          />
+
+          <Input
+            label="Password"
+            type="password"
+            name="password"
+            placeholder="Enter your password"
+          />
 
           <div className="pt-2">
             <Button type="submit" className="w-full">
@@ -194,6 +214,9 @@ function LoginForm() {
         {/* <p className="mt-6 text-center font-sans text-xs text-ink-faint">
           Don't have an account yet? <a href="/register" className="text-ink hover:text-primary underline underline-offset-4 hover:underline">Register here</a>.
         </p> */}
+        <p className="mt-6 text-center font-sans text-xs text-ink-faint">
+          Your energy data stays connected to your account.
+        </p>
       </div>
     </div>
   );
