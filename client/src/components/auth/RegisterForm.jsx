@@ -99,7 +99,6 @@ function RegisterForm() {
       ];
 
       fields.forEach((field) => {
-        // Don't validate untouched fields
         if (!touched[field]) {
           return;
         }
@@ -113,7 +112,6 @@ function RegisterForm() {
       });
     }, 500);
 
-    // Cancel previous timer when user types again
     return () => clearTimeout(timer);
   }, [formData, touched]);
 
@@ -147,7 +145,6 @@ function RegisterForm() {
 
     setErrors(newErrors);
 
-    // Mark all fields as touched
     setTouched({
       name: true,
       email: true,
@@ -155,20 +152,13 @@ function RegisterForm() {
       confirmPassword: true,
     });
 
-    // Stop submission if errors exist
     if (Object.keys(newErrors).length > 0) {
       return;
     }
 
-    console.log("Registration successful");
-    console.log(formData);
-
-    // Later:
-    // Send formData to backend API
+    console.log("Registration successful", formData);
   };
 
-
-function RegisterForm() {
   return (
     <div className="flex h-full items-center justify-center px-8 py-10 md:px-12">
       <div className="w-full max-w-sm">
@@ -198,7 +188,7 @@ function RegisterForm() {
               onChange={handleChange}
             />
             {errors.name && (
-              <p className="text-[11px] mt-1 font-semibold text-warn">
+              <p className="mt-1 text-[11px] font-semibold text-warn">
                 {errors.name}
               </p>
             )}
@@ -214,7 +204,7 @@ function RegisterForm() {
               onChange={handleChange}
             />
             {errors.email && (
-              <p className="text-[11px] mt-1 font-semibold text-warn">
+              <p className="mt-1 text-[11px] font-semibold text-warn">
                 {errors.email}
               </p>
             )}
@@ -230,7 +220,7 @@ function RegisterForm() {
               onChange={handleChange}
             />
             {errors.password && (
-              <p className="text-[11px] mt-1 font-semibold text-warn">
+              <p className="mt-1 text-[11px] font-semibold text-warn">
                 {errors.password}
               </p>
             )}
@@ -246,39 +236,11 @@ function RegisterForm() {
               onChange={handleChange}
             />
             {errors.confirmPassword && (
-              <p className="text-[11px] mt-1 font-semibold text-warn">
+              <p className="mt-1 text-[11px] font-semibold text-warn">
                 {errors.confirmPassword}
               </p>
             )}
           </div>
-        <form className="space-y-5">
-          <Input
-            label="Name"
-            type="text"
-            name="name"
-            placeholder="Your name"
-          />
-
-          <Input
-            label="Email"
-            type="email"
-            name="email"
-            placeholder="you@example.com"
-          />
-
-          <Input
-            label="Password"
-            type="password"
-            name="password"
-            placeholder="Create a password"
-          />
-
-          <Input
-            label="Confirm Password"
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm your password"
-          />
 
           <div className="pt-2">
             <Button type="submit" className="w-full">

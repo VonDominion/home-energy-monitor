@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom"
 import PublicLayout from "../Layouts/PublicLayout/PublicLayout"
 import DashboardLayout from "../Layouts/DasboardLayout/DasboardLayout"
+import { ProtectedRoute } from "../components/common/ProtectedRoute";
 
 import Home from "../pages/Home.jsx"
 import Login from "../pages/Login.jsx"
@@ -28,7 +29,7 @@ function AppRoutes() {
 
         {/* Protected Routes */}
 
-        <Route path="/dashboard" element={<DashboardLayout />}>
+        <Route path="/dashboard" element={<ProtectedRoute> <DashboardLayout /> </ProtectedRoute>}>
           <Route index element={<Dashboard />} />
 
           <Route
