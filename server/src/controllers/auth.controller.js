@@ -31,8 +31,16 @@ const signup = async (req, res) => {
 
     await user.save();
 
+// Issue JWT token on registration
+    const token = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: '1d' }
+    );
+
     return res.status(201).json({
-      message: "User registered successfully",
+      message: 'User registered successfully',
+      token,
       user: {
         id: user._id,
         name: user.name,
@@ -40,10 +48,9 @@ const signup = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Signup error:", error.message);
-
+    console.error('Signup error:', error.message);
     return res.status(500).json({
-      message: "Internal server error",
+      message: 'Internal server error',
     });
   }
 };
