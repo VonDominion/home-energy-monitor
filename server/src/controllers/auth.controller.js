@@ -5,14 +5,17 @@ const jwt = require('jsonwebtoken');
 const signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
+    const normalizedEmail = email?.trim().toLowerCase();
 
-    if (!name || !email || !password) {
-      return res.status(400).json({
-        message: "Name, email and password are required",
-      });
-    }
+    if (!name || !normalizedEmail || !password) {
+    return res.status(400).json({
+        message: 'Name, email and password are required'
+    });
+}
 
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({
+    email: normalizedEmail
+});
 
     if (existingUser) {
       return res.status(409).json({
@@ -20,11 +23,11 @@ const signup = async (req, res) => {
       });
     }
 
-    const user = new User({
-      name,
-      email,
-      password,
-    });
+   const user = new User({
+    name,
+    email: normalizedEmail,
+    password
+});
 
     await user.save();
 
@@ -49,13 +52,17 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password) {
+const normalizedEmail = email?.trim().toLowerCase();
+
+    if (!normalizedEmail || !password) {
       return res.status(400).json({
         message: "Email and password are required",
       });
     }
 
-    const user = await User.findOne({ email });
+const user = await User.findOne({
+    email: normalizedEmail
+});
 
     if (!user) {
       return res.status(401).json({

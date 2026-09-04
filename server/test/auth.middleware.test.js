@@ -1,6 +1,7 @@
 const assert = require('assert');
 const request = require('supertest');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 
 require('dotenv').config();
 
@@ -9,72 +10,100 @@ const connectDB = require('../src/config/db');
 const User = require('../src/models/user.model');
 
 const run = async () => {
+    const email = 'middleware-test@example.com';
+    const password = 'password123';
 
-    await connectDB();
+    try {
+        await connectDB();
 
-    const user = await User.findOne({
-        email: 'naitikcontroller@example.com'
-    });
+        // Remove old test user if it already exists
+        await User.deleteOne({ email });
 
-    assert(user);
+        // Create test user
+        const user = await new User({
+            name: 'Test User',
+            email,
+            password
+        }).save();
 
-    const token = jwt.sign(
-        {
-            userId: user._id
-        },
-        process.env.JWT_SECRET,
-        {
-            expiresIn: '1d'
-        }
-    );
+        // Generate JWT
+        const token = jwt.sign(
+            {
+                userId: user._id
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: '1d'
+            }
+        );
 
-    // Test 1: valid token
-    const response = await request(app)
-        .get('/api/auth/me')
-        .set('Authorization', `Bearer ${token}`);
+        // ==========================================
+        // Test 1: Valid token
+        // ==========================================
 
-    assert.strictEqual(response.status, 200);
+        const response = await request(app)
+            .get('/api/auth/me')
+            .set('Authorization', `Bearer ${token}`);
 
-    assert(response.body.user);
+        assert.strictEqual(response.status, 200);
 
-assert.strictEqual(
-    response.body.user.id,
-    user._id.toString()
-);
+        assert(response.body.user);
 
-assert.strictEqual(
-    response.body.user.email,
-    user.email
-);
+        assert.strictEqual(
+            response.body.user.id,
+            user._id.toString()
+        );
 
-    console.log('Valid token test passed');
+        assert.strictEqual(
+            response.body.user.email,
+            user.email
+        );
 
-    // Test 2: no token
-    const noTokenResponse = await request(app)
-        .get('/api/auth/me');
+        console.log('Valid token test passed');
 
-    assert.strictEqual(noTokenResponse.status, 401);
+        // ==========================================
+        // Test 2: No token
+        // ==========================================
 
-    assert.strictEqual(
-        noTokenResponse.body.message,
-        'Authentication required'
-    );
+        const noTokenResponse = await request(app)
+            .get('/api/auth/me');
 
-    console.log('No token test passed');
+        assert.strictEqual(noTokenResponse.status, 401);
 
-    // Test 3: invalid token
-const invalidTokenResponse = await request(app)
-    .get('/api/auth/me')
-    .set('Authorization', 'Bearer invalid-token');
+        assert.strictEqual(
+            noTokenResponse.body.message,
+            'Authentication required'
+        );
 
-assert.strictEqual(invalidTokenResponse.status, 401);
+        console.log('No token test passed');
 
-assert.strictEqual(
-    invalidTokenResponse.body.message,
-    'Invalid or expired token'
-);
+        // ==========================================
+        // Test 3: Invalid token
+        // ==========================================
 
-console.log('Invalid token test passed');
+        const invalidTokenResponse = await request(app)
+            .get('/api/auth/me')
+            .set('Authorization', 'Bearer invalid-token');
+
+        assert.strictEqual(
+            invalidTokenResponse.status,
+            401
+        );
+
+        assert.strictEqual(
+            invalidTokenResponse.body.message,
+            'Invalid or expired token'
+        );
+
+        console.log('Invalid token test passed');
+
+    } finally {
+        // Remove test user
+        await User.deleteOne({ email });
+
+        // Close MongoDB connection
+        await mongoose.disconnect();
+    }
 };
 
 run().catch((error) => {

@@ -12,10 +12,16 @@ const authMiddleware = (req, res, next) => {
 
         const token = authHeader.split(' ')[1];
 
-        const decoded = jwt.verify(
-            token,
-            process.env.JWT_SECRET
-        );
+if (!process.env.JWT_SECRET) {
+    return res.status(500).json({
+        message: 'Server authentication is not configured'
+    });
+}
+
+const decoded = jwt.verify(
+    token,
+    process.env.JWT_SECRET
+);
 
         req.user = decoded;
 
