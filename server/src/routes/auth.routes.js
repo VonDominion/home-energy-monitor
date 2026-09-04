@@ -1,8 +1,16 @@
 const express = require('express');
-const User = require('../models/user.model');
+
+const {
+    signup,
+    login,
+    getMe
+} = require('../controllers/auth.controller');
+
+const authMiddleware = require('../middleware/auth.middleware');
 
 const router = express.Router();
 
+<<<<<<< HEAD
 router.post('/register', async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -47,4 +55,10 @@ router.post('/register', async (req, res) => {
     }
 });
 
+=======
+router.post('/signup', signup);
+router.post('/login', login);
+router.get('/me', authMiddleware, getMe);
+
+>>>>>>> 3da8cb5a778e71c142abb348e1f2845d50316ec4
 module.exports = router;
