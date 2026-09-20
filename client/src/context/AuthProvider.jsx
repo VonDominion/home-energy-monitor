@@ -1,28 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { AuthContext } from "./AuthContext";
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  // Hydrate authentication state on initial app load
-  useEffect(() => {
-    const storedToken = localStorage.getItem("token");
+  const [token, setToken] = useState(() => localStorage.getItem("token"));
+  const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem("user");
+    if (!storedUser) return null;
 
-    if (storedToken && storedUser) {
-      try {
-        setToken(storedToken);
-        setUser(JSON.parse(storedUser));
-      } catch (err) {
-        // Clear corrupted storage if JSON parse fails
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-      }
+    try {
+      return JSON.parse(storedUser);
+    } catch {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      return null;
     }
-    setLoading(false);
-  }, []);
+  });
 
   // Handle User Login
   const login = async (credentials) => {
@@ -87,13 +79,12 @@ export const AuthProvider = ({ children }) => {
         user,
         token,
         isAuthenticated: !!token,
-        loading,
         login,
         register,
         logout,
       }}
     >
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 };
