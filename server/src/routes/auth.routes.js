@@ -24,11 +24,5 @@ const router = express.Router();
 
 router.post('/register', signup);
 router.post('/login', login);
-
-// Protected User Route
-router.get('/me', authMiddleware, getMe);
-
-router.post('/register', signup);
-router.post('/login', login);
 router.get('/me', authMiddleware, getMe);
 module.exports = router;

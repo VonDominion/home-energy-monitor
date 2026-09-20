@@ -1,13 +1,10 @@
-import Input from "../common/Input";
-import Button from "../common/Button";
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import { loginApi } from "../../services/AuthService";
 
-function LoginForm() {
-  const navigate = useNavigate();
+export default function LoginForm() {
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -15,189 +12,155 @@ function LoginForm() {
   });
 
   const [errors, setErrors] = useState({});
-  const [touched, setTouched] = useState({});
+  const [serverError, setServerError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [apiError, setApiError] = useState("");
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-
-    setFormData((previous) => ({
-      ...previous,
-      [name]: value,
-    }));
-
-    setTouched((previous) => ({
-      ...previous,
-      [name]: true,
-    }));
-
-    setErrors((previous) => ({
-      ...previous,
-      [name]: "",
-    }));
-    
-    if (apiError) setApiError("");
-  };
-
-  const validateField = (field) => {
-    let error = "";
-
-    if (field === "email") {
-      if (!formData.email.trim()) {
-        error = "Email is required";
-      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-        error = "Enter a valid email address";
-      }
-    }
-
-    if (field === "password") {
-      if (!formData.password) {
-        error = "Password is required";
-      }
-    }
-
-    return error;
-  };
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      const fields = ["email", "password"];
-
-      fields.forEach((field) => {
-        if (!touched[field]) return;
-
-        const error = validateField(field);
-
-        setErrors((previous) => ({
-          ...previous,
-          [field]: error,
-        }));
-      });
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [formData, touched]);
-
-  const validateForm = () => {
+  const validate = () => {
     const newErrors = {};
-    const fields = ["email", "password"];
 
-    fields.forEach((field) => {
-      const error = validateField(field);
-      if (error) {
-        newErrors[field] = error;
-      }
-    });
+    if (!formData.email.trim()) {
+      newErrors.email = "Email address is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
 
-    return newErrors;
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    const newErrors = validateForm();
-    setErrors(newErrors);
-
-    setTouched({
-      email: true,
-      password: true,
-    });
-
-    if (Object.keys(newErrors).length > 0) {
-      return;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" }));
     }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setServerError("");
+
+    if (!validate()) return;
 
     setIsSubmitting(true);
-    setApiError("");
 
     try {
-      // 1. Call Mock API
-      const response = await loginApi(formData);
-      
-      // 2. Save user payload to AuthContext
-      login(response.user);
+      // Connect to backend via AuthContext/authService
+      await login({
+        email: formData.email,
+        password: formData.password,
+      });
 
-      // 3. Programmatically navigate to Dashboard
       navigate("/dashboard");
     } catch (err) {
-      setApiError(err.message || "Invalid credentials. Please try again.");
+      setServerError(err.message || "Invalid email or password.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="flex h-full items-center justify-center px-8 py-10 md:px-12">
-      <div className="w-full max-w-sm">
-        <div className="mb-8">
-          <p className="font-sans text-xs font-semibold uppercase tracking-wider text-ink-muted">
-            Welcome Back
-          </p>
-
-          <h2 className="mt-3 font-serif text-3xl font-semibold tracking-tight text-ink">
-            Sign in to your account
-          </h2>
-
-          <p className="mt-3 font-sans text-sm leading-6 text-ink-muted">
-            Access your real-time energy analytics and system settings.
+    <div className="min-h-screen bg-canvas flex flex-col justify-center items-center p-4">
+      <div className="w-full max-w-md bg-surface border border-border p-8 rounded-sm shadow-none">
+        {/* Brand Header */}
+        <div className="mb-6 text-center">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-800 font-sans">
+            Eco-Monitor Authentication
+          </span>
+          <h1 className="font-serif text-3xl font-bold text-ink mt-1">
+            Sign In
+          </h1>
+          <p className="text-xs text-ink-muted mt-1 font-sans">
+            Access your real-time home energy intelligence
           </p>
         </div>
 
-        {apiError && (
-          <div className="mb-4 rounded-sm border border-warn/20 bg-warn/10 p-3 text-xs text-warn font-medium">
-            {apiError}
+        {/* Global Server Error Banner */}
+        {serverError && (
+          <div className="mb-6 p-3 bg-red-50 border border-warn/30 text-warn text-xs rounded-sm font-sans">
+            {serverError}
           </div>
         )}
 
-        <form className="space-y-5" onSubmit={handleSubmit}>
+        {/* Login Form */}
+        <form onSubmit={handleSubmit} className="space-y-4 font-sans" noValidate>
+          {/* Email Input */}
           <div>
-            <Input
-              label="Email"
+            <label className="block text-xs font-bold uppercase tracking-wider text-ink mb-1">
+              Email Address
+            </label>
+            <input
               type="email"
               name="email"
-              placeholder="you@example.com"
               value={formData.email}
               onChange={handleChange}
-              disabled={isSubmitting}
+              placeholder="mayank@example.com"
+              className={`w-full px-3 py-2 text-sm bg-canvas border rounded-sm focus:outline-none transition-colors ${errors.email ? "border-warn focus:border-warn" : "border-border focus:border-ink"
+                }`}
             />
             {errors.email && (
-              <p className="mt-1 text-[11px] font-semibold text-warn">
+              <p className="text-[11px] text-warn font-semibold mt-1">
                 {errors.email}
               </p>
             )}
           </div>
 
+          {/* Password Input & Forgot Password Link */}
           <div>
-            <Input
-              label="Password"
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-xs font-bold uppercase tracking-wider text-ink">
+                Password
+              </label>
+              <Link
+                to="/forgot-password"
+                className="text-[11px] font-sans text-ink-muted hover:text-ink underline transition-colors"
+              >
+                Forgot Password?
+              </Link>
+            </div>
+            <input
               type="password"
               name="password"
-              placeholder="Enter your password"
               value={formData.password}
               onChange={handleChange}
-              disabled={isSubmitting}
+              placeholder="••••••••"
+              className={`w-full px-3 py-2 text-sm bg-canvas border rounded-sm focus:outline-none transition-colors ${errors.password
+                  ? "border-warn focus:border-warn"
+                  : "border-border focus:border-ink"
+                }`}
             />
             {errors.password && (
-              <p className="mt-1 text-[11px] font-semibold text-warn">
+              <p className="text-[11px] text-warn font-semibold mt-1">
                 {errors.password}
               </p>
             )}
           </div>
 
-          <div className="pt-2">
-            <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Signing In..." : "Sign In"}
-            </Button>
-          </div>
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full mt-2 bg-ink text-surface font-bold text-xs uppercase tracking-wider py-3 px-4 rounded-sm hover:bg-stone-800 transition-colors disabled:opacity-50"
+          >
+            {isSubmitting ? "Signing In..." : "Sign In"}
+          </button>
         </form>
 
-        <p className="mt-6 text-center font-sans text-xs text-ink-faint">
-          Need an account? Create one above to get started.
-        </p>
+        {/* Footer Navigation
+        <div className="mt-6 text-center border-t border-border pt-4 text-xs text-ink-muted font-sans">
+          Don't have an account?{" "}
+          <Link
+            to="/register"
+            className="font-bold text-ink underline hover:text-emerald-800 transition-colors"
+          >
+            Create one
+          </Link>
+        </div> */}
       </div>
     </div>
   );
 }
-
-export default LoginForm;

@@ -1,22 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
 
 export const AuthProvider = ({ children }) => {
-  // 1. Lazy state initializers fix the "setState within an effect" warning
-  const [token, setToken] = useState(() => localStorage.getItem("token") || null);
-  const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem("user");
-    if (!storedUser) return null;
-    try {
-      return JSON.parse(storedUser);
-    } catch {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      return null;
-    }
-  });
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const isAuthenticated = Boolean(token && user);
+  // Hydrate authentication state on initial app load
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    const storedUser = localStorage.getItem("user");
+
+    if (storedToken && storedUser) {
+      try {
+        setToken(storedToken);
+        setUser(JSON.parse(storedUser));
+      } catch (err) {
+        // Clear corrupted storage if JSON parse fails
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+      }
+    }
+    setLoading(false);
+  }, []);
 
   // Handle User Login
   const login = async (credentials) => {
@@ -80,13 +86,14 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         token,
-        isAuthenticated,
+        isAuthenticated: !!token,
+        loading,
         login,
         register,
         logout,
       }}
     >
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   );
-}
+};
