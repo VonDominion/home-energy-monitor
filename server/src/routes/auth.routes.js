@@ -22,10 +22,7 @@ const authMiddleware = require('../middleware/auth.middleware');
 
 const router = express.Router();
 
-router.post('/signup', signup);
+router.post('/register', signup);
 router.post('/login', login);
-
-// Protected User Route
 router.get('/me', authMiddleware, getMe);
-
 module.exports = router;

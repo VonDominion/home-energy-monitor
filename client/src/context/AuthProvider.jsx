@@ -54,24 +54,31 @@ export const AuthProvider = ({ children }) => {
     });
 
     const data = await response.json();
+
     if (!response.ok) {
+      // 2. Integrated 409 conflict handling directly inside async function
+      if (response.status === 409) {
+        throw new Error(data.message || "An account with this email already exists.");
+      }
       throw new Error(data.message || "Registration failed");
     }
 
     // Auto-login user upon successful registration
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
+    if (data.token && data.user) {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
 
-    setToken(data.token);
-    setUser(data.user);
+      setToken(data.token);
+      setUser(data.user);
+    }
   };
 
   // Handle User Logout
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
     setToken(null);
     setUser(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
   };
 
   return (
