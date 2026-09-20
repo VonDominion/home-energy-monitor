@@ -15,11 +15,10 @@ function DashboardLayout() {
           <Outlet />
         </main>
 
+          <DashboardFooter />
+
       </div>
 
-      <div>
-        <DashboardFooter />
-      </div>
     </div>
   );
 }
