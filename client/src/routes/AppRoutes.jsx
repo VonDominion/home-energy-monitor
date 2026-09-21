@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom"
 import PublicLayout from "../Layouts/PublicLayout/PublicLayout"
-import DashboardLayout from "../Layouts/DasboardLayout/DasboardLayout"
+import DashboardLayout from "../Layouts/DasboardLayout/DashboardLayout.jsx"
 import { ProtectedRoute } from "../components/common/ProtectedRoute";
 
 import Home from "../pages/Home.jsx"

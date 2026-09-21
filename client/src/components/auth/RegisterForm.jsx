@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/UseAuth";
 
 export default function RegisterForm() {
@@ -39,7 +39,7 @@ export default function RegisterForm() {
   };
 
   // Field-level validation rules
-  const validateField = (field) => {
+  const validateField = useCallback((field) => {
     let error = "";
 
     if (field === "name") {
@@ -81,7 +81,7 @@ export default function RegisterForm() {
     }
 
     return error;
-  };
+  }, [formData]);
 
   // Debounced real-time validation
   useEffect(() => {
@@ -101,7 +101,7 @@ export default function RegisterForm() {
     }, 400);
 
     return () => clearTimeout(timer);
-  }, [formData, touched]);
+  }, [formData, touched, validateField]);
 
   // Validate entire form on submit
   const validateForm = () => {
