@@ -6,8 +6,9 @@ import { ProtectedRoute } from "../components/common/ProtectedRoute";
 import Home from "../pages/Home.jsx"
 import Login from "../pages/Login.jsx"
 import Register from "../pages/Register.jsx"
-import Appliances from "../pages/Appliances.jsx"
 import Dashboard from "../pages/Dashboard.jsx"
+import Appliances from "../pages/Appliances.jsx"
+import Energy from "../pages/Energy.jsx";
 import Profile from "../pages/Profile.jsx"
 import ForgotPassword from "../pages/ForgotPassword.jsx"
 
@@ -21,9 +22,9 @@ function AppRoutes() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route 
-            path="/forgot-password" 
-            element={<ForgotPassword />} 
+          <Route
+            path="/forgot-password"
+            element={<ForgotPassword />}
           />
         </Route>
 
@@ -31,6 +32,11 @@ function AppRoutes() {
 
         <Route path="/dashboard" element={<ProtectedRoute> <DashboardLayout /> </ProtectedRoute>}>
           <Route index element={<Dashboard />} />
+
+          <Route
+            path="energy"
+            element={<Energy />}
+          />
 
           <Route
             path="appliances"
