@@ -5,7 +5,7 @@ const app = require('../src/app');
 
 const run = async () => {
     const response = await request(app)
-        .post('/api/auth/signup')
+        .post('/api/auth/register')
         .send({
             name: 'Test User',
             email: 'test@example.com'
